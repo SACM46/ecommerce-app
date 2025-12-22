@@ -1,0 +1,55 @@
+﻿<div class="container">
+  <div class="page-header">
+    <h1>🛒 Carrito de Compras</h1>
+    <p>Revisa tus productos seleccionados</p>
+  </div>
+
+  <div class="empty-state" *ngIf="cartItems.length === 0">
+    <div class="empty-state-icon">🛒</div>
+    <h3>Tu carrito está vacío</h3>
+    <p>Agrega productos para comenzar tu compra</p>
+    <button class="btn btn-primary" (click)="navigateToProducts()">
+      🛍️ Ir a Productos
+    </button>
+  </div>
+
+  <div class="cart-layout" *ngIf="cartItems.length > 0">
+    <div class="cart-items">
+      <app-cart-item
+        *ngFor="let item of cartItems"
+        [cartItem]="item"
+        (updateQuantity)="onUpdateQuantity($event.productId, $event.quantity)"
+        (removeItem)="onRemoveItem($event)"
+      ></app-cart-item>
+    </div>
+
+    <div class="cart-summary">
+      <h3>Resumen del Pedido</h3>
+      
+      <div class="cart-summary-row">
+        <span>Productos ({{ getItemCount() }})</span>
+        <span>${{ total.toFixed(2) }}</span>
+      </div>
+
+      <div class="cart-summary-row">
+        <span>Envío</span>
+        <span class="free-shipping">Gratis</span>
+      </div>
+
+      <div class="cart-summary-divider"></div>
+
+      <div class="cart-summary-row cart-summary-total">
+        <span>Total</span>
+        <span class="total-amount">${{ total.toFixed(2) }}</span>
+      </div>
+
+      <button class="btn btn-success checkout-btn" (click)="onCheckout()">
+        💳 Proceder al Pago
+      </button>
+
+      <button class="btn btn-secondary continue-shopping-btn" (click)="navigateToProducts()">
+        ← Continuar Comprando
+      </button>
+    </div>
+  </div>
+</div>

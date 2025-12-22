@@ -1,0 +1,49 @@
+﻿<div class="login-container">
+  <div class="card">
+    <div class="login-header">
+      <h1>🛍️ E-commerce</h1>
+      <p>Bienvenido de nuevo</p>
+    </div>
+
+    <div class="info-box">
+      <strong>Credenciales de prueba:</strong><br>
+      Email: john@mail.com<br>
+      Password: changeme
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Email</label>
+        <input 
+          type="email" 
+          formControlName="email"
+          placeholder="john@mail.com"
+          [class.error]="email?.invalid && email?.touched"
+        >
+        <span class="error-message" *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">El email es requerido</span>
+          <span *ngIf="email?.errors?.['email']">Email inválido</span>
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input 
+          type="password" 
+          formControlName="password"
+          placeholder="••••••••"
+          [class.error]="password?.invalid && password?.touched"
+        >
+        <span class="error-message" *ngIf="password?.invalid && password?.touched">
+          <span *ngIf="password?.errors?.['required']">El password es requerido</span>
+          <span *ngIf="password?.errors?.['minlength']">Mínimo 6 caracteres</span>
+        </span>
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        <span *ngIf="!loading">🔐 Iniciar Sesión</span>
+        <span *ngIf="loading">Iniciando sesión...</span>
+      </button>
+    </form>
+  </div>
+</div>

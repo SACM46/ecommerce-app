@@ -1,0 +1,41 @@
+﻿.login-container {
+  max-width: 450px;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #64748b;
+    font-size: 16px;
+  }
+}
+
+.info-box {
+  background: #dbeafe;
+  border: 1px solid #3b82f6;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  font-size: 14px;
+
+  strong {
+    color: #1e40af;
+  }
+}
+
+form {
+  .btn-primary {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
