@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
-
+import { ProductDetailComponent } from './features/products/product-detail/product-detail';
 export const routes: Routes = [
   {
     path: '',
@@ -31,6 +31,7 @@ export const routes: Routes = [
     loadComponent: () => import('./features/cart/cart-view/cart-view.component').then(m => m.CartViewComponent),
     canActivate: [authGuard]
   },
+  { path: 'products/:id', component: ProductDetailComponent },
   {
     path: '**',
     redirectTo: 'products'

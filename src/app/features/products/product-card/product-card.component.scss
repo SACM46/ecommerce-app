@@ -11,6 +11,9 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 }
+.clickable:hover {
+  opacity: .95;
+}
 
 .product-image {
   width: 100%;
@@ -37,7 +40,7 @@
   margin-bottom: 8px;
   color: #1e293b;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -47,7 +50,7 @@
   color: #64748b;
   margin-bottom: 12px;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 40px;
