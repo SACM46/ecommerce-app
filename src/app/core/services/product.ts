@@ -1,52 +1,57 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { Product, CreateProductDto, UpdateProductDto } from '../models/product.model';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Product, CreateProductDto } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
+
   constructor(private http: HttpClient) {}
 
+  // ✅ LISTAR PRODUCTOS
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${environment.apiUrl}/products`).pipe(
-      map(products => products.map(p => ({
-        ...p,
-        stock: Math.floor(Math.random() * 50) + 10
-      })))
+    return this.http.get<Product[]>(
+      `${environment.apiUrl}/products`
     );
   }
 
-  getProduct(id: number): Observable<Product> {
-    return this.http.get<Product>(`${environment.apiUrl}/products/${id}`).pipe(
-      map(p => ({
-        ...p,
-        stock: Math.floor(Math.random() * 50) + 10
-      }))
+  // ✅ OBTENER 1 PRODUCTO
+  getProductById(id: number): Observable<Product> {
+    return this.http.get<Product>(
+      `${environment.apiUrl}/products/${id}`
     );
   }
 
+  // ✅ CREAR PRODUCTO (DTO -> Product)
   createProduct(product: CreateProductDto): Observable<Product> {
-    return this.http.post<Product>(`${environment.apiUrl}/products`, product).pipe(
-      map(p => ({
-        ...p,
-        stock: product.stock || 0
-      }))
+    return this.http.post<Product>(
+      `${environment.apiUrl}/products`,
+      product
     );
   }
 
-  updateProduct(id: number, product: UpdateProductDto): Observable<Product> {
-    return this.http.put<Product>(`${environment.apiUrl}/products/${id}`, product).pipe(
-      map(p => ({
-        ...p,
-        stock: product.stock || 0
-      }))
+  // ✅ ACTUALIZAR PRODUCTO
+  updateProduct(id: number, product: Partial<CreateProductDto>): Observable<Product> {
+    return this.http.put<Product>(
+      `${environment.apiUrl}/products/${id}`,
+      product
     );
   }
 
-  deleteProduct(id: number): Observable<boolean> {
-    return this.http.delete<boolean>(`${environment.apiUrl}/products/${id}`);
+  // ✅ ELIMINAR PRODUCTO
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${environment.apiUrl}/products/${id}`
+    );
+  }
+
+  // ✅ CATEGORÍAS REALES
+  getCategories(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/categories`
+    );
   }
 }

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { ProductService } from '../../../core/services/product';
 import { NotificationService } from '../../../core/services/notification';
-import { Product } from '../../../core/models/product.model';
+import { CreateProductDto } from '../../../core/models/product.model';
 
 @Component({
   selector: 'app-product-form',
@@ -14,66 +15,78 @@ import { Product } from '../../../core/models/product.model';
   styleUrls: ['./product-form.component.scss']
 })
 export class ProductFormComponent implements OnInit {
+
   productForm!: FormGroup;
   loading = false;
-  isEditMode = false;
-  productId: number | null = null;
+
+  // Categorías reales desde la API
+  categories: any[] = [];
+
+  // Preview de imagen
+  imagePreview = 'https://picsum.photos/640/480';
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     private notificationService: NotificationService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.checkEditMode();
+    this.loadCategories();
+
+    // Preview en vivo cuando cambia el input de imagen
+    this.productForm.get('image')?.valueChanges.subscribe((val) => {
+      const url = (val ?? '').toString().trim();
+      this.imagePreview = url ? url : 'https://picsum.photos/640/480';
+    });
   }
 
   initForm(): void {
     this.productForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
-      price: ['', [Validators.required, Validators.min(0)]],
+      price: [null, [Validators.required, Validators.min(1)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
-      categoryId: [1, [Validators.required, Validators.min(1)]],
-      image: ['', [Validators.required, Validators.pattern('https?://.+')]],
-      stock: [0, [Validators.required, Validators.min(0)]]
+      categoryId: [null, Validators.required],
+      image: ['', Validators.required],
     });
   }
 
-  checkEditMode(): void {
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.isEditMode = true;
-        this.productId = +params['id'];
-        this.loadProduct(this.productId);
-      }
-    });
-  }
+  loadCategories(): void {
+    this.productService.getCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
 
-  loadProduct(id: number): void {
-    this.loading = true;
-    this.productService.getProduct(id).subscribe({
-      next: (product) => {
-        this.productForm.patchValue({
-          title: product.title,
-          price: product.price,
-          description: product.description,
-          categoryId: product.category.id,
-          image: product.images[0],
-          stock: product.stock || 0
-        });
-        this.loading = false;
+        // Si no hay categoría seleccionada, pone la primera
+        const current = this.productForm.get('categoryId')?.value;
+        if ((!current || Number(current) < 1) && cats.length) {
+          this.productForm.patchValue({ categoryId: cats[0].id });
+        }
       },
-      error: (error) => {
-        this.notificationService.error('Error al cargar producto');
-        console.error('Error loading product:', error);
-        this.router.navigate(['/products']);
-        this.loading = false;
+      error: (e) => {
+        console.error('Error loading categories:', e);
+        this.notificationService.error('No se pudieron cargar las categorías');
       }
     });
+  }
+
+  // Validación simple para mostrar mensajes
+  isInvalid(name: string): boolean {
+    const c = this.productForm.get(name);
+    return !!(c && c.invalid && (c.dirty || c.touched));
+  }
+
+  // Si la imagen falla, ponemos una por defecto
+  onImgError(): void {
+    this.imagePreview = 'https://picsum.photos/640/480';
+  }
+
+  // Nombre de categoría para el preview
+  getCategoryName(id: any): string {
+    const cid = Number(id);
+    const cat = this.categories.find(c => Number(c.id) === cid);
+    return cat?.name ?? '';
   }
 
   onSubmit(): void {
@@ -84,38 +97,31 @@ export class ProductFormComponent implements OnInit {
 
     this.loading = true;
 
-    const productData = {
-      ...this.productForm.value,
-      images: [this.productForm.value.image]
+    const v = this.productForm.value;
+
+    // ✅ Payload compatible con escuelajs
+    const productData: CreateProductDto = {
+      title: (v.title ?? '').toString().trim(),
+      price: Number(v.price),
+      description: (v.description ?? '').toString().trim(),
+      categoryId: Number(v.categoryId),
+      images: [(v.image ?? '').toString().trim()],
     };
 
-    const request = this.isEditMode && this.productId
-      ? this.productService.updateProduct(this.productId, productData)
-      : this.productService.createProduct(productData);
+    console.log('ENVIANDO PRODUCTO:', productData);
 
-    request.subscribe({
+    this.productService.createProduct(productData).subscribe({
       next: () => {
-        this.notificationService.success(
-          this.isEditMode ? 'Producto actualizado exitosamente' : 'Producto creado exitosamente'
-        );
+        this.notificationService.success('Producto creado correctamente');
         this.router.navigate(['/products']);
       },
-      error: (error) => {
+      error: (err) => {
+        console.error('Error saving product:', err);
+        // si el backend manda mensaje, lo mostramos en consola
+        console.log('Backend says:', err?.error);
         this.notificationService.error('Error al guardar producto');
-        console.error('Error saving product:', error);
         this.loading = false;
       }
     });
   }
-
-  onCancel(): void {
-    this.router.navigate(['/products']);
-  }
-
-  get title() { return this.productForm.get('title'); }
-  get price() { return this.productForm.get('price'); }
-  get description() { return this.productForm.get('description'); }
-  get categoryId() { return this.productForm.get('categoryId'); }
-  get image() { return this.productForm.get('image'); }
-  get stock() { return this.productForm.get('stock'); }
 }
