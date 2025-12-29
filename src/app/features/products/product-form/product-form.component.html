@@ -1,0 +1,79 @@
+﻿<div class="page">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>Agregar producto</h2>
+        <p>Completa la información para crear un producto en la tienda.</p>
+      </div>
+      <div class="badge">Admin</div>
+    </div>
+
+    <form class="form" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="grid">
+        <div class="field">
+          <label>Título</label>
+          <input type="text" formControlName="title" placeholder="Ej: Licuadora Oster 600W" />
+          <small class="error" *ngIf="isInvalid('title')">El título es obligatorio</small>
+        </div>
+
+        <div class="field">
+          <label>Precio</label>
+          <input type="number" formControlName="price" placeholder="Ej: 350000" />
+          <small class="error" *ngIf="isInvalid('price')">Precio obligatorio y mayor a 0</small>
+        </div>
+
+        <div class="field">
+          <label>Categoría</label>
+          <select formControlName="categoryId">
+            <option value="" disabled>Selecciona una categoría</option>
+            <option *ngFor="let c of categories" [value]="c.id">
+              {{ c.name }}
+            </option>
+          </select>
+          <small class="error" *ngIf="isInvalid('categoryId')">Selecciona una categoría</small>
+        </div>
+
+        <div class="field">
+          <label>Imagen (URL)</label>
+          <input
+            type="text"
+            formControlName="image"
+            placeholder="https://picsum.photos/640/480"
+          />
+          <small class="hint">Usa una URL https válida.</small>
+          <small class="error" *ngIf="isInvalid('image')">La URL de imagen es obligatoria</small>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Descripción</label>
+        <textarea
+          rows="4"
+          formControlName="description"
+          placeholder="Características, garantía, envío, etc."
+        ></textarea>
+        <small class="error" *ngIf="isInvalid('description')">La descripción es obligatoria</small>
+      </div>
+
+      <div class="preview">
+        <div class="imgbox">
+          <img [src]="imagePreview" (error)="onImgError()" alt="Preview" />
+        </div>
+
+        <div class="preview-info">
+          <div class="p-title">{{ productForm.value.title || 'Nombre del producto' }}</div>
+          <div class="p-price">
+            {{ productForm.value.price ? ('$ ' + productForm.value.price) : '$ 0' }}
+          </div>
+          <div class="p-cat">
+            Categoría: {{ getCategoryName(productForm.value.categoryId) || '—' }}
+          </div>
+
+          <button class="btn" type="submit" [disabled]="loading || productForm.invalid">
+            {{ loading ? 'Guardando...' : 'Guardar producto' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

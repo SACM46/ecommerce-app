@@ -1,0 +1,37 @@
+<div class="detail-page">
+  <a class="back" routerLink="/products">← Volver a productos</a>
+
+  <div class="detail-card" *ngIf="product">
+    <div class="image-box">
+      <img
+        [src]="product.images || fallback"
+        (error)="imgError($event)"
+        alt="product image"
+      />
+    </div>
+
+    <div class="info">
+      <h1 class="title">{{ product.title }}</h1>
+
+      <div class="price">$ {{ product.price | number }}</div>
+
+      <div class="category">
+        Categoría: <span>{{ product.category.name }}</span>
+      </div>
+
+      <p class="description">
+        {{ product.description }}
+      </p>
+
+      <div class="actions">
+        <button class="btn-primary" (click)="addToCart()">
+          🛒 Agregar al carrito
+        </button>
+
+        <a class="btn-link" routerLink="/cart">
+          Ver carrito
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

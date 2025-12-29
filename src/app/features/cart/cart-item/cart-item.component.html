@@ -1,0 +1,41 @@
+﻿<div class="cart-item">
+  <img 
+    [src]="getImageUrl()" 
+    [alt]="cartItem.product.title" 
+    class="cart-item-image"
+    (error)="onImageError($event)"
+  >
+  
+  <div class="cart-item-content">
+    <div class="cart-item-header">
+      <div>
+        <h3 class="cart-item-title">{{ cartItem.product.title }}</h3>
+        <p class="cart-item-category">{{ cartItem.product.category.name }}</p>
+      </div>
+      <button class="btn-remove" (click)="onRemove()" title="Eliminar">
+        🗑️
+      </button>
+    </div>
+
+    <div class="cart-item-footer">
+      <div class="quantity-control">
+        <button 
+          class="quantity-btn" 
+          (click)="onDecreaseQuantity()"
+          [disabled]="cartItem.quantity <= 1"
+        >
+          −
+        </button>
+        <span class="quantity-value">{{ cartItem.quantity }}</span>
+        <button class="quantity-btn" (click)="onIncreaseQuantity()">
+          +
+        </button>
+      </div>
+
+      <div class="price-info">
+        <div class="unit-price">${{ cartItem.product.price }} c/u</div>
+        <div class="subtotal">Subtotal: <strong>${{ getSubtotal().toFixed(2) }}</strong></div>
+      </div>
+    </div>
+  </div>
+</div>

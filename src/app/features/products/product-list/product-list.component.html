@@ -1,0 +1,44 @@
+﻿<div class="container">
+  <div class="page-header">
+    <h1>📦 Productos</h1>
+    <p>Gestiona tu inventario de electrodomésticos</p>
+  </div>
+
+  <div class="header-actions">
+    <button class="btn btn-success" (click)="navigateToCreate()">
+      ➕ Crear Producto
+    </button>
+  </div>
+
+  <div class="search-bar">
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery"
+      (input)="onSearch()"
+      placeholder="🔍 Buscar productos por nombre, descripción o categoría..."
+    >
+  </div>
+
+  <app-loading *ngIf="loading"></app-loading>
+
+  <div class="empty-state" *ngIf="!loading && filteredProducts.length === 0">
+    <div class="empty-state-icon">📦</div>
+    <h3>No se encontraron productos</h3>
+    <p *ngIf="searchQuery">Intenta con otro término de búsqueda</p>
+    <p *ngIf="!searchQuery">Comienza creando tu primer producto</p>
+    <button class="btn btn-primary" (click)="navigateToCreate()" *ngIf="!searchQuery">
+      ➕ Crear Producto
+    </button>
+  </div>
+
+  <div class="product-grid" *ngIf="!loading && filteredProducts.length > 0">
+    <app-product-card
+      *ngFor="let product of filteredProducts"
+      [product]="product"
+      (addToCart)="onAddToCart($event)"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+
+    ></app-product-card>
+  </div>
+</div>

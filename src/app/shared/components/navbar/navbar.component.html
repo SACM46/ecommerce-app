@@ -1,0 +1,18 @@
+﻿<nav class="navbar">
+  <div class="navbar-content">
+    <a routerLink="/" class="navbar-brand">🛍️ E-commerce</a>
+    
+    <div class="navbar-menu" *ngIf="isAuthenticated$ | async">
+      <a routerLink="/products" routerLinkActive="active" class="navbar-link">
+        📦 Productos
+      </a>
+      <a routerLink="/cart" routerLinkActive="active" class="navbar-link">
+        🛒 Carrito
+        <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+      </a>
+      <button class="navbar-link btn-logout" (click)="logout()">
+        🚪 Salir
+      </button>
+    </div>
+  </div>
+</nav>
