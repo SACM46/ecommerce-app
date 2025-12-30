@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { ProductService } from '../../../core/services/product';
 import { NotificationService } from '../../../core/services/notification';
-import { CreateProductDto } from '../../../core/models/product.model';
+import { Product, CreateProductDto } from '../../../core/models/product.model';
+
+type Category = { id: number; name: string };
 
 @Component({
   selector: 'app-product-form',
@@ -14,79 +17,114 @@ import { CreateProductDto } from '../../../core/models/product.model';
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss']
 })
-export class ProductFormComponent implements OnInit {
+export class ProductFormComponent implements OnInit, OnDestroy {
 
   productForm!: FormGroup;
   loading = false;
 
-  // Categorías reales desde la API
-  categories: any[] = [];
+  isEditMode = false;
+  productId: number | null = null;
 
-  // Preview de imagen
+  categories: Category[] = [];
+
   imagePreview = 'https://picsum.photos/640/480';
+
+  private subs = new Subscription();
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     private notificationService: NotificationService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
-    this.loadCategories();
-
-    // Preview en vivo cuando cambia el input de imagen
-    this.productForm.get('image')?.valueChanges.subscribe((val) => {
-      const url = (val ?? '').toString().trim();
-      this.imagePreview = url ? url : 'https://picsum.photos/640/480';
-    });
-  }
-
-  initForm(): void {
     this.productForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      price: [null, [Validators.required, Validators.min(1)]],
-      description: ['', [Validators.required, Validators.minLength(10)]],
-      categoryId: [null, Validators.required],
-      image: ['', Validators.required],
+      title: ['', Validators.required],
+      price: [0, [Validators.required, Validators.min(1)]],
+      categoryId: ['', Validators.required],
+      images: ['', Validators.required], // 👈 string para el input
+      description: ['', Validators.required]
     });
+
+    // Preview cuando cambia la URL
+    this.subs.add(
+      this.productForm.get('images')!.valueChanges.subscribe((val: string) => {
+        const url = (val || '').trim();
+        this.imagePreview = url || 'https://picsum.photos/640/480';
+      })
+    );
+
+    // Categorías
+    this.subs.add(
+      this.productService.getCategories().subscribe({
+        next: (cats: any[]) => {
+          this.categories = (cats || []).map(c => ({
+            id: Number(c.id),
+            name: String(c.name)
+          }));
+        },
+        error: () => this.notificationService.error('No se pudieron cargar las categorías')
+      })
+    );
+
+    // Detectar edición
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.isEditMode = true;
+      this.productId = Number(idParam);
+      this.loadProduct(this.productId);
+    }
   }
 
-  loadCategories(): void {
-    this.productService.getCategories().subscribe({
-      next: (cats) => {
-        this.categories = cats;
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 
-        // Si no hay categoría seleccionada, pone la primera
-        const current = this.productForm.get('categoryId')?.value;
-        if ((!current || Number(current) < 1) && cats.length) {
-          this.productForm.patchValue({ categoryId: cats[0].id });
+  private loadProduct(id: number): void {
+    this.loading = true;
+
+    this.subs.add(
+      this.productService.getProductById(id).subscribe({
+        next: (product: Product) => {
+          const firstImg =
+            Array.isArray(product.images) && product.images.length > 0
+              ? product.images[0]
+              : '';
+
+          this.productForm.patchValue({
+            title: product.title ?? '',
+            price: product.price ?? 0,
+            categoryId: (product as any).categoryId ?? '',
+            images: firstImg, // 👈 STRING
+            description: product.description ?? ''
+          });
+
+          this.imagePreview = (firstImg || 'https://picsum.photos/640/480').trim();
+          this.loading = false;
+        },
+        error: () => {
+          this.notificationService.error('No se pudo cargar el producto');
+          this.loading = false;
+          this.router.navigate(['/products']);
         }
-      },
-      error: (e) => {
-        console.error('Error loading categories:', e);
-        this.notificationService.error('No se pudieron cargar las categorías');
-      }
-    });
+      })
+    );
   }
 
-  // Validación simple para mostrar mensajes
-  isInvalid(name: string): boolean {
-    const c = this.productForm.get(name);
-    return !!(c && c.invalid && (c.dirty || c.touched));
+  isInvalid(field: string): boolean {
+    const control = this.productForm.get(field);
+    return !!(control && control.invalid && (control.touched || control.dirty));
   }
 
-  // Si la imagen falla, ponemos una por defecto
+  getCategoryName(categoryId: any): string {
+    const id = Number(categoryId);
+    return this.categories.find(c => c.id === id)?.name || '';
+  }
+
   onImgError(): void {
     this.imagePreview = 'https://picsum.photos/640/480';
-  }
-
-  // Nombre de categoría para el preview
-  getCategoryName(id: any): string {
-    const cid = Number(id);
-    const cat = this.categories.find(c => Number(c.id) === cid);
-    return cat?.name ?? '';
   }
 
   onSubmit(): void {
@@ -97,31 +135,45 @@ export class ProductFormComponent implements OnInit {
 
     this.loading = true;
 
-    const v = this.productForm.value;
+    const imgText = (this.productForm.value.images || '').trim();
 
-    // ✅ Payload compatible con escuelajs
-    const productData: CreateProductDto = {
-      title: (v.title ?? '').toString().trim(),
-      price: Number(v.price),
-      description: (v.description ?? '').toString().trim(),
-      categoryId: Number(v.categoryId),
-      images: [(v.image ?? '').toString().trim()],
+    const dto: CreateProductDto = {
+      title: this.productForm.value.title,
+      price: Number(this.productForm.value.price),
+      description: this.productForm.value.description,
+      images: imgText ? [imgText] : [], // 👈 vuelve a array
+      categoryId: Number(this.productForm.value.categoryId)
     };
 
-    console.log('ENVIANDO PRODUCTO:', productData);
+    if (this.isEditMode && this.productId !== null) {
+      this.subs.add(
+        this.productService.updateProduct(this.productId, dto).subscribe({
+          next: () => {
+            this.notificationService.success('Producto actualizado');
+            this.loading = false;
+            this.router.navigate(['/products']);
+          },
+          error: () => {
+            this.notificationService.error('Error al actualizar');
+            this.loading = false;
+          }
+        })
+      );
+      return;
+    }
 
-    this.productService.createProduct(productData).subscribe({
-      next: () => {
-        this.notificationService.success('Producto creado correctamente');
-        this.router.navigate(['/products']);
-      },
-      error: (err) => {
-        console.error('Error saving product:', err);
-        // si el backend manda mensaje, lo mostramos en consola
-        console.log('Backend says:', err?.error);
-        this.notificationService.error('Error al guardar producto');
-        this.loading = false;
-      }
-    });
+    this.subs.add(
+      this.productService.createProduct(dto).subscribe({
+        next: () => {
+          this.notificationService.success('Producto creado');
+          this.loading = false;
+          this.router.navigate(['/products']);
+        },
+        error: () => {
+          this.notificationService.error('Error al crear');
+          this.loading = false;
+        }
+      })
+    );
   }
 }

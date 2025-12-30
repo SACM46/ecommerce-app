@@ -2,8 +2,12 @@
   <div class="card">
     <div class="card-header">
       <div>
-        <h2>Agregar producto</h2>
-        <p>Completa la información para crear un producto en la tienda.</p>
+        <h2>{{ isEditMode ? 'Editar producto' : 'Agregar producto' }}</h2>
+        <p>
+          {{ isEditMode
+            ? 'Modifica la información del producto.'
+            : 'Completa la información para crear un producto en la tienda.' }}
+        </p>
       </div>
       <div class="badge">Admin</div>
     </div>
@@ -12,14 +16,14 @@
       <div class="grid">
         <div class="field">
           <label>Título</label>
-          <input type="text" formControlName="title" placeholder="Ej: Licuadora Oster 600W" />
+          <input type="text" formControlName="title" />
           <small class="error" *ngIf="isInvalid('title')">El título es obligatorio</small>
         </div>
 
         <div class="field">
           <label>Precio</label>
-          <input type="number" formControlName="price" placeholder="Ej: 350000" />
-          <small class="error" *ngIf="isInvalid('price')">Precio obligatorio y mayor a 0</small>
+          <input type="number" formControlName="price" />
+          <small class="error" *ngIf="isInvalid('price')">Precio inválido</small>
         </div>
 
         <div class="field">
@@ -35,24 +39,18 @@
 
         <div class="field">
           <label>Imagen (URL)</label>
-          <input
-            type="text"
-            formControlName="image"
-            placeholder="https://picsum.photos/640/480"
-          />
-          <small class="hint">Usa una URL https válida.</small>
-          <small class="error" *ngIf="isInvalid('image')">La URL de imagen es obligatoria</small>
+          <input type="text" formControlName="images" />
+          <small class="hint">Usa una URL https válida</small>
+          <small class="error" *ngIf="isInvalid('images')">La imagen es obligatoria</small>
         </div>
       </div>
 
       <div class="field">
         <label>Descripción</label>
-        <textarea
-          rows="4"
-          formControlName="description"
-          placeholder="Características, garantía, envío, etc."
-        ></textarea>
-        <small class="error" *ngIf="isInvalid('description')">La descripción es obligatoria</small>
+        <textarea rows="4" formControlName="description"></textarea>
+        <small class="error" *ngIf="isInvalid('description')">
+          La descripción es obligatoria
+        </small>
       </div>
 
       <div class="preview">
@@ -61,16 +59,22 @@
         </div>
 
         <div class="preview-info">
-          <div class="p-title">{{ productForm.value.title || 'Nombre del producto' }}</div>
+          <div class="p-title">
+            {{ productForm.value.title || 'Nombre del producto' }}
+          </div>
+
           <div class="p-price">
             {{ productForm.value.price ? ('$ ' + productForm.value.price) : '$ 0' }}
           </div>
+
           <div class="p-cat">
             Categoría: {{ getCategoryName(productForm.value.categoryId) || '—' }}
           </div>
 
           <button class="btn" type="submit" [disabled]="loading || productForm.invalid">
-            {{ loading ? 'Guardando...' : 'Guardar producto' }}
+            {{ loading
+              ? 'Guardando...'
+              : (isEditMode ? 'Actualizar producto' : 'Guardar producto') }}
           </button>
         </div>
       </div>
