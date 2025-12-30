@@ -1,0 +1,58 @@
+<div class="home-container">
+  <!-- Hero -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h2>Limited Time Offer</h2>
+        <p>Up to 50% OFF</p>
+        <button routerLink="/products">Shop Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- Categories -->
+  <section class="categories-section" *ngIf="!loading">
+    <div class="categories-scroll">
+      <div
+        class="category-item"
+        *ngFor="let category of categories"
+        (click)="goToCategory(category.slug)"
+      >
+        <div class="category-icon">{{ category.icon }}</div>
+        <span>{{ category.name }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flash Sale -->
+  <section class="flash-sale-section" *ngIf="!loading">
+    <h2>Flash Sale</h2>
+
+    <div class="products-scroll">
+      <app-product-card
+        *ngFor="let product of flashProducts"
+        [product]="product">
+      </app-product-card>
+    </div>
+  </section>
+
+  <!-- Recommended -->
+  <section class="todays-section" *ngIf="!loading">
+    <h2>Recommended For You</h2>
+
+    <div class="products-grid">
+      <app-product-card
+        *ngFor="let product of recommendedProducts"
+        [product]="product">
+      </app-product-card>
+    </div>
+
+    <button routerLink="/products">Ver todos</button>
+  </section>
+
+</div>

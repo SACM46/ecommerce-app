@@ -1,41 +1,81 @@
-﻿.login-container {
+﻿/* Contenedor principal del formulario de login */
+.login-container {
+  /* Ancho máximo del formulario */
   max-width: 450px;
+
+  /* Centra el contenedor horizontalmente y da espacio arriba */
   margin: 60px auto;
+
+  /* Espaciado interno */
   padding: 20px;
 }
 
+/* Encabezado del login (título y subtítulo) */
 .login-header {
+  /* Centra el texto */
   text-align: center;
+
+  /* Separación inferior respecto al resto del contenido */
   margin-bottom: 24px;
 
+  /* Estilos del título */
   h1 {
+    /* Tamaño grande para destacar el nombre del sistema */
     font-size: 36px;
+
+    /* Texto en negrita */
     font-weight: 700;
+
+    /* Espacio debajo del título */
     margin-bottom: 8px;
   }
 
+  /* Estilos del texto secundario */
   p {
+    /* Color gris suave */
     color: #64748b;
+
+    /* Tamaño de letra estándar */
     font-size: 16px;
   }
 }
 
+/* Caja informativa para credenciales de prueba */
 .info-box {
+  /* Fondo azul claro */
   background: #dbeafe;
+
+  /* Borde azul */
   border: 1px solid #3b82f6;
+
+  /* Bordes redondeados */
   border-radius: 8px;
+
+  /* Espaciado interno */
   padding: 16px;
+
+  /* Separación inferior */
   margin-bottom: 24px;
+
+  /* Tamaño de texto más pequeño */
   font-size: 14px;
 
+  /* Estilo del texto en negrita */
   strong {
+    /* Azul más oscuro para resaltar */
     color: #1e40af;
   }
 }
 
+/* Estilos relacionados con el formulario */
 form {
+
+  /* Botón principal del formulario */
   .btn-primary {
+    /* Ocupa todo el ancho del formulario */
     width: 100%;
+
+    /* Separación superior del botón */
     margin-top: 8px;
   }
 }

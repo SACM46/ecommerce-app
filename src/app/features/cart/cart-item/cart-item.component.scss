@@ -1,41 +1,91 @@
-﻿.cart-item {
+﻿/* ============================
+   CONTENEDOR PRINCIPAL DEL ITEM
+   ============================ */
+.cart-item {
+  /* Distribuye imagen y contenido en fila */
   display: flex;
+
+  /* Espacio entre la imagen y el contenido */
   gap: 20px;
+
+  /* Espaciado interno */
   padding: 20px;
+
+  /* Fondo blanco tipo tarjeta */
   background: white;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Borde gris claro */
   border: 1px solid #e2e8f0;
+
+  /* Sombra suave */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* Animación al pasar el mouse */
   transition: box-shadow 0.2s;
 
+  /* Efecto hover */
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 }
 
+/* ============================
+   IMAGEN DEL PRODUCTO
+   ============================ */
 .cart-item-image {
+  /* Tamaño fijo de la imagen */
   width: 120px;
   height: 120px;
+
+  /* Mantiene proporción sin deformar */
   object-fit: cover;
+
+  /* Bordes redondeados */
   border-radius: 8px;
+
+  /* Color de fondo si la imagen no carga */
   background: #f1f5f9;
+
+  /* Evita que la imagen se reduzca */
   flex-shrink: 0;
 }
 
+/* ============================
+   CONTENIDO DEL PRODUCTO
+   ============================ */
 .cart-item-content {
+  /* Ocupa el espacio restante */
   flex: 1;
+
+  /* Organiza contenido en columna */
   display: flex;
   flex-direction: column;
+
+  /* Distribuye header y footer */
   justify-content: space-between;
 }
 
+/* ============================
+   ENCABEZADO DEL ITEM
+   ============================ */
 .cart-item-header {
+  /* Distribuye título y botón eliminar */
   display: flex;
   justify-content: space-between;
+
+  /* Alineación superior */
   align-items: start;
+
+  /* Espacio inferior */
   margin-bottom: 12px;
 }
 
+/* ============================
+   TÍTULO DEL PRODUCTO
+   ============================ */
 .cart-item-title {
   font-size: 18px;
   font-weight: 600;
@@ -43,11 +93,15 @@
   margin-bottom: 4px;
 }
 
+/* Categoría del producto */
 .cart-item-category {
   color: #64748b;
   font-size: 14px;
 }
 
+/* ============================
+   BOTÓN ELIMINAR
+   ============================ */
 .btn-remove {
   background: none;
   border: none;
@@ -57,29 +111,41 @@
   border-radius: 4px;
   transition: background 0.2s;
 
+  /* Efecto hover */
   &:hover {
     background: #fee2e2;
   }
 }
 
+/* ============================
+   PIE DEL ITEM
+   ============================ */
 .cart-item-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  /* Permite que se acomode en pantallas pequeñas */
   flex-wrap: wrap;
   gap: 16px;
 }
 
+/* ============================
+   CONTROL DE CANTIDAD
+   ============================ */
 .quantity-control {
   display: flex;
   align-items: center;
   gap: 12px;
+
+  /* Borde y fondo del control */
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 4px;
   background: #f8fafc;
 }
 
+/* Botones + y - */
 .quantity-btn {
   width: 36px;
   height: 36px;
@@ -87,21 +153,26 @@
   background: white;
   border-radius: 6px;
   cursor: pointer;
+
   font-size: 18px;
   font-weight: 600;
   color: #3b82f6;
+
   transition: all 0.2s;
 
+  /* Hover solo si no está deshabilitado */
   &:hover:not(:disabled) {
     background: #dbeafe;
   }
 
+  /* Estado deshabilitado */
   &:disabled {
     opacity: 0.4;
     cursor: not-allowed;
   }
 }
 
+/* Valor numérico de la cantidad */
 .quantity-value {
   min-width: 30px;
   text-align: center;
@@ -109,41 +180,55 @@
   font-size: 16px;
 }
 
+/* ============================
+   PRECIOS
+   ============================ */
 .price-info {
   text-align: right;
 }
 
+/* Precio unitario */
 .unit-price {
   color: #64748b;
   font-size: 14px;
   margin-bottom: 4px;
 }
 
+/* Subtotal */
 .subtotal {
   font-size: 18px;
   color: #1e293b;
 
+  /* Precio destacado */
   strong {
     color: #10b981;
     font-size: 20px;
   }
 }
 
+/* ============================
+   RESPONSIVE (MÓVIL)
+   ============================ */
 @media (max-width: 640px) {
+
+  /* El item se apila en columna */
   .cart-item {
     flex-direction: column;
   }
 
+  /* Imagen ocupa todo el ancho */
   .cart-item-image {
     width: 100%;
     height: 200px;
   }
 
+  /* Footer en columna */
   .cart-item-footer {
     flex-direction: column;
     align-items: stretch;
   }
 
+  /* Precios alineados a la izquierda */
   .price-info {
     text-align: left;
   }

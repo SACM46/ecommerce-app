@@ -4,8 +4,8 @@ import { ProductDetailComponent } from './features/products/product-detail/produ
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'products',
-    pathMatch: 'full'
+    loadComponent: () =>
+    import('./features/home/home/home').then(m => m.HomeComponent)
   },
   {
     path: 'login',

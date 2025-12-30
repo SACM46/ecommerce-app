@@ -1,41 +1,72 @@
 ﻿<div class="cart-item">
+
+  <!-- Imagen del producto -->
   <img 
     [src]="getImageUrl()" 
-    [alt]="cartItem.product.title" 
+    [alt]="cartItem.product.title"
     class="cart-item-image"
     (error)="onImageError($event)"
   >
-  
+
+  <!-- Contenido del producto -->
   <div class="cart-item-content">
+
+    <!-- Encabezado -->
     <div class="cart-item-header">
       <div>
-        <h3 class="cart-item-title">{{ cartItem.product.title }}</h3>
-        <p class="cart-item-category">{{ cartItem.product.category.name }}</p>
+        <h3 class="cart-item-title">
+          {{ cartItem.product.title }}
+        </h3>
+        <p class="cart-item-category">
+          {{ cartItem.product.category.name }}
+        </p>
       </div>
+
+      <!-- Botón eliminar -->
       <button class="btn-remove" (click)="onRemove()" title="Eliminar">
         🗑️
       </button>
     </div>
 
+    <!-- Pie -->
     <div class="cart-item-footer">
+
+      <!-- Control de cantidad -->
       <div class="quantity-control">
         <button 
-          class="quantity-btn" 
+          class="quantity-btn"
           (click)="onDecreaseQuantity()"
           [disabled]="cartItem.quantity <= 1"
         >
           −
         </button>
-        <span class="quantity-value">{{ cartItem.quantity }}</span>
-        <button class="quantity-btn" (click)="onIncreaseQuantity()">
+
+        <span class="quantity-value">
+          {{ cartItem.quantity }}
+        </span>
+
+        <button 
+          class="quantity-btn"
+          (click)="onIncreaseQuantity()"
+        >
           +
         </button>
       </div>
 
+      <!-- Precios -->
       <div class="price-info">
-        <div class="unit-price">${{ cartItem.product.price }} c/u</div>
-        <div class="subtotal">Subtotal: <strong>${{ getSubtotal().toFixed(2) }}</strong></div>
+        <div class="unit-price">
+          ${{ cartItem.product.price }} c/u
+        </div>
+
+        <div class="subtotal">
+          Subtotal:
+          <strong>
+            ${{ getSubtotal().toFixed(2) }}
+          </strong>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
