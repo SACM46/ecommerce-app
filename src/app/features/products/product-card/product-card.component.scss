@@ -49,12 +49,16 @@
   font-size: 14px;
   color: #64748b;
   margin-bottom: 12px;
+
   display: -webkit-box;
-  
+  -webkit-line-clamp: 2;   /* 🔥 número de líneas */
+  line-clamp: 2;           /* ✅ estándar (para el warning) */
   -webkit-box-orient: vertical;
+
   overflow: hidden;
   min-height: 40px;
 }
+
 
 .product-footer {
   margin-bottom: 12px;

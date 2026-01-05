@@ -31,28 +31,36 @@
 
   <!-- Flash Sale -->
   <section class="flash-sale-section" *ngIf="!loading">
+    <div class="section-header">
     <h2>Flash Sale</h2>
-
+  </div>
     <div class="products-scroll">
       <app-product-card
-        *ngFor="let product of flashProducts"
-        [product]="product">
-      </app-product-card>
+  *ngFor="let product of flashProducts"
+  [product]="product"
+  [showActions]="false">
+</app-product-card>
+
     </div>
   </section>
 
   <!-- Recommended -->
   <section class="todays-section" *ngIf="!loading">
+    <div class="section-header">
     <h2>Recommended For You</h2>
+  </div>
 
     <div class="products-grid">
       <app-product-card
-        *ngFor="let product of recommendedProducts"
-        [product]="product">
-      </app-product-card>
-    </div>
+  *ngFor="let product of flashProducts"
+  [product]="product"
+  [showActions]="false">
+</app-product-card>
 
+    </div>
+<div class="section-header">
     <button routerLink="/products">Ver todos</button>
+  </div>
   </section>
 
 </div>

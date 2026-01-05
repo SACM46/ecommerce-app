@@ -1,5 +1,5 @@
 <div class="detail-page">
-  <a class="back" routerLink="/products">← Volver a productos</a>
+  <a class="back" routerLink="/home">← Volver a inicio</a>
 
   <div class="detail-card" *ngIf="product">
     <div class="image-box">
@@ -28,9 +28,7 @@
           🛒 Agregar al carrito
         </button>
 
-        <a class="btn-link" routerLink="/cart">
-          Ver carrito
-        </a>
+        <button class="btn btn-outline-primary" [routerLink]="['/cart']">Ver carrito</button>
       </div>
     </div>
   </div>

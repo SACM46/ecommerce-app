@@ -43,8 +43,8 @@ export class HomeComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: (data: Product[]) => {
         this.products = data ?? [];
-        this.flashProducts = this.products.slice(0, 6);
-        this.recommendedProducts = this.products.slice(0, 12);
+        this.flashProducts = this.products.slice(0, 4);
+        this.recommendedProducts = this.products.slice(0, 8);
         this.loading = false;
       },
       error: () => {

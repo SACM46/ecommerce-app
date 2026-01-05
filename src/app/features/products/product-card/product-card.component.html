@@ -32,17 +32,17 @@
   </div>
 
   <!-- BOTONES (NO navegan) -->
-  <div class="product-actions">
-    <button class="btn btn-success" (click)="onAddToCart()">
-      🛒 Agregar
-    </button>
-    <button class="btn btn-secondary" (click)="onEdit()">
-      ✏️
-    </button>
-    <button class="btn btn-danger" (click)="onDelete()">
-      🗑️
-    </button>
-  </div>
+  <div class="product-actions" *ngIf="showActions">
+  <button class="btn btn-success" (click)="onAddToCart()">
+    🛒 Agregar
+  </button>
+  <button class="btn btn-secondary" (click)="onEdit()">
+    ✏️
+  </button>
+  <button class="btn btn-danger" (click)="onDelete()">
+    🗑️
+  </button>
+</div>
 
 </div>
 

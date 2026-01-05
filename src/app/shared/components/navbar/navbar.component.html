@@ -1,18 +1,38 @@
-﻿<nav class="navbar">
+﻿<!-- navbar.component.html -->
+<nav class="navbar">
   <div class="navbar-content">
+    <!-- Logo (siempre visible) -->
     <a routerLink="/" class="navbar-brand">🛍️ E-commerce</a>
-    
-    <div class="navbar-menu" *ngIf="isAuthenticated$ | async">
+
+    <!-- ✅ Si está logueado -->
+    <div class="navbar-menu" *ngIf="isAuthenticated$ | async; else loggedOut">
       <a routerLink="/products" routerLinkActive="active" class="navbar-link">
         📦 Productos
       </a>
+
       <a routerLink="/cart" routerLinkActive="active" class="navbar-link">
         🛒 Carrito
         <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
       </a>
+
       <button class="navbar-link btn-logout" (click)="logout()">
         🚪 Salir
       </button>
     </div>
+
+    <!-- ✅ Si NO está logueado -->
+    <ng-template #loggedOut>
+      <div class="navbar-menu">
+        <!-- Si no tienes /home, puedes dejarlo en "/" -->
+        <a routerLink="/" routerLinkActive="active" class="navbar-link">
+          🏠 Inicio
+        </a>
+
+        <a routerLink="/login" routerLinkActive="active" class="navbar-link">
+          🔐 Iniciar sesión
+        </a>
+      </div>
+    </ng-template>
   </div>
 </nav>
+

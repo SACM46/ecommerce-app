@@ -16,16 +16,19 @@ export class CartService {
   }
 
   private saveCart(cart: CartItem[]): void {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    this.cartSubject.next(cart);
+    // ✅ siempre guardar y emitir un NUEVO arreglo (evita problemas por mutación)
+    const nextCart = [...cart];
+    localStorage.setItem('cart', JSON.stringify(nextCart));
+    this.cartSubject.next(nextCart);
   }
 
   addToCart(product: Product): void {
-    const cart = this.cartSubject.value;
-    const existingItem = cart.find(item => item.product.id === product.id);
+    const cart = [...this.cartSubject.value];
+    const index = cart.findIndex(item => item.product.id === product.id);
 
-    if (existingItem) {
-      existingItem.quantity++;
+    if (index >= 0) {
+      const existing = cart[index];
+      cart[index] = { ...existing, quantity: existing.quantity + 1 };
     } else {
       cart.push({ product, quantity: 1 });
     }
@@ -39,11 +42,12 @@ export class CartService {
   }
 
   updateQuantity(productId: number, quantity: number): void {
-    const cart = this.cartSubject.value;
-    const item = cart.find(item => item.product.id === productId);
+    const cart = [...this.cartSubject.value];
+    const index = cart.findIndex(item => item.product.id === productId);
 
-    if (item) {
-      item.quantity = Math.max(1, quantity);
+    if (index >= 0) {
+      const q = Math.max(1, quantity);
+      cart[index] = { ...cart[index], quantity: q };
       this.saveCart(cart);
     }
   }

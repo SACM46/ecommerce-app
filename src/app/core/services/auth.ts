@@ -12,6 +12,7 @@ export class AuthService {
   private tokenSubject = new BehaviorSubject<string | null>(this.getToken());
   private userSubject = new BehaviorSubject<User | null>(this.getUser());
 
+  // ✅ streams públicos
   public token$ = this.tokenSubject.asObservable();
   public user$ = this.userSubject.asObservable();
 
@@ -26,11 +27,17 @@ export class AuthService {
       credentials
     ).pipe(
       tap(response => {
+        // ✅ guarda y emite SIEMPRE
         this.setToken(response.access_token);
-        const user: User = { id: 1, email: credentials.email };
+
+        const user: User = { id: 1, email: credentials.email }; // ajusta si tu backend devuelve user real
         this.setUser(user);
+
         this.tokenSubject.next(response.access_token);
         this.userSubject.next(user);
+
+        // ✅ opcional: manda a products o home cuando inicia sesión
+        // this.router.navigate(['/products']);
       })
     );
   }
@@ -38,9 +45,13 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+
+    // ✅ emite el cambio para que el navbar se actualice de una
     this.tokenSubject.next(null);
     this.userSubject.next(null);
-    this.router.navigate(['/login']);
+
+    // ✅ mejor llevar al home (público)
+    this.router.navigate(['/']);
   }
 
   isAuthenticated(): boolean {

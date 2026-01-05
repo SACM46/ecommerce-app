@@ -15,6 +15,8 @@ export class ProductCardComponent {
   @Output() addToCart = new EventEmitter<Product>();
   @Output() edit = new EventEmitter<Product>();
   @Output() delete = new EventEmitter<Product>();
+  @Input() showActions: boolean = true;
+
 
   onAddToCart(): void {
     this.addToCart.emit(this.product);
