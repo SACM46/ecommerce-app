@@ -4,7 +4,7 @@
     <p>Gestiona tu inventario de electrodomésticos</p>
   </div>
 
-  <div class="header-actions">
+  <div class="header-actions"*ngIf="isAdmin">
     <button class="btn btn-success" (click)="navigateToCreate()">
       ➕ Crear Producto
     </button>
@@ -26,9 +26,14 @@
     <h3>No se encontraron productos</h3>
     <p *ngIf="searchQuery">Intenta con otro término de búsqueda</p>
     <p *ngIf="!searchQuery">Comienza creando tu primer producto</p>
-    <button class="btn btn-primary" (click)="navigateToCreate()" *ngIf="!searchQuery">
-      ➕ Crear Producto
-    </button>
+    <button
+  class="btn btn-primary"
+  (click)="navigateToCreate()"
+  *ngIf="!searchQuery && isAdmin"
+>
+  ➕ Crear Producto
+</button>
+
   </div>
 
   <div class="product-grid" *ngIf="!loading && filteredProducts.length > 0">

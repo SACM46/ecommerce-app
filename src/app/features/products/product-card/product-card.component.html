@@ -1,48 +1,57 @@
 ﻿<div class="product-card">
-
   <!-- ZONA CLICKEABLE (abre detalle) -->
-  <div class="clickable"
-       [routerLink]="['/products', product.id]"
-       style="cursor:pointer">
-
-    <img 
-      [src]="getImageUrl()" 
-      [alt]="product.title" 
+  <div
+    class="clickable"
+    [routerLink]="['/products', product.id]"
+    style="cursor: pointer"
+  >
+    <img
+      [src]="getImageUrl()"
+      [alt]="product.title"
       class="product-image"
       (error)="onImageError($event)"
-    >
+    />
 
     <div class="product-content">
       <div class="product-category">
-        {{ product.category.name || 'Sin categoría' }}
+        {{ categoryName }}
       </div>
 
       <h3 class="product-title">{{ product.title }}</h3>
-      <p class="product-description">{{ product.description }}</p>
+
+      <p class="product-description">
+        {{ product.description }}
+      </p>
 
       <div class="product-footer">
         <div>
-          <div class="product-price">${{ product.price }}</div>
+          <div class="product-price">
+            $ {{ product.price | number }}
+          </div>
+
           <div class="product-stock">
-            Stock: {{ product.stock || 0 }} unidades
+            Stock: {{ stockValue }} unidades
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- BOTONES (NO navegan) -->
+  <!-- ACCIONES -->
   <div class="product-actions" *ngIf="showActions">
-  <button class="btn btn-success" (click)="onAddToCart()">
-    🛒 Agregar
-  </button>
-  <button class="btn btn-secondary" (click)="onEdit()">
-    ✏️
-  </button>
-  <button class="btn btn-danger" (click)="onDelete()">
-    🗑️
-  </button>
-</div>
+    <button class="btn btn-success" type="button" (click)="onAddToCart()">
+      🛒 Agregar
+    </button>
 
-</div>
+    <!-- SOLO ADMIN -->
+    <ng-container *ngIf="isAdmin">
+      <button class="btn btn-secondary" type="button" (click)="onEdit()">
+        ✏️
+      </button>
 
+      <button class="btn btn-danger" type="button" (click)="onDelete()">
+        🗑️
+      </button>
+    </ng-container>
+  </div>
+</div>

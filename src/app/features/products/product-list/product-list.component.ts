@@ -28,9 +28,12 @@ export class ProductListComponent implements OnInit {
     private notificationService: NotificationService,
     private router: Router
   ) {}
-
+  isAdmin = false;
   ngOnInit(): void {
     this.loadProducts();
+    // Aquí podrías verificar si el usuario es admin
+    // Por simplicidad, lo dejamos en false
+    this.isAdmin = !!localStorage.getItem('token');
   }
 
   loadProducts(): void {

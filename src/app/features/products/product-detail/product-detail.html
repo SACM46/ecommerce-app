@@ -3,11 +3,26 @@
 
   <div class="detail-card" *ngIf="product">
     <div class="image-box">
+      <!-- IMAGEN PRINCIPAL -->
       <img
-        [src]="product.images || fallback"
+        class="main-image"
+        [src]="selectedImage || fallback"
         (error)="imgError($event)"
         alt="product image"
       />
+
+      <!-- MINIATURAS -->
+      <div class="thumbs" *ngIf="images.length > 1">
+        <img
+          *ngFor="let img of images"
+          class="thumb"
+          [src]="img"
+          [class.active]="img === selectedImage"
+          (click)="selectImage(img)"
+          (error)="imgError($event)"
+          alt="miniatura"
+        />
+      </div>
     </div>
 
     <div class="info">
@@ -15,20 +30,21 @@
 
       <div class="price">$ {{ product.price | number }}</div>
 
-      <div class="category">
-        Categoría: <span>{{ product.category.name }}</span>
+      <div class="meta">
+        <span class="chip">Categoría: {{ categoryName }}</span>
+        <span class="chip">Stock: {{ stockValue }}</span>
       </div>
 
-      <p class="description">
-        {{ product.description }}
-      </p>
+      <p class="description">{{ product.description }}</p>
 
       <div class="actions">
         <button class="btn-primary" (click)="addToCart()">
           🛒 Agregar al carrito
         </button>
 
-        <button class="btn btn-outline-primary" [routerLink]="['/cart']">Ver carrito</button>
+        <button class="btn btn-outline-primary" routerLink="/cart">
+          Ver carrito
+        </button>
       </div>
     </div>
   </div>

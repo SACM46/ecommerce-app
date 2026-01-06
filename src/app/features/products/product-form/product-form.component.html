@@ -4,9 +4,11 @@
       <div>
         <h2>{{ isEditMode ? 'Editar producto' : 'Agregar producto' }}</h2>
         <p>
-          {{ isEditMode
-            ? 'Modifica la información del producto.'
-            : 'Completa la información para crear un producto en la tienda.' }}
+          {{
+            isEditMode
+              ? 'Modifica la información del producto.'
+              : 'Completa la información para crear un producto en la tienda.'
+          }}
         </p>
       </div>
       <div class="badge">Admin</div>
@@ -23,7 +25,7 @@
         <div class="field">
           <label>Precio</label>
           <input type="number" formControlName="price" />
-          <small class="error" *ngIf="isInvalid('price')">Precio inválido</small>
+          <small class="error" *ngIf="isInvalid('price')">El precio debe ser mayor a 0</small>
         </div>
 
         <div class="field">
@@ -34,14 +36,25 @@
               {{ c.name }}
             </option>
           </select>
-          <small class="error" *ngIf="isInvalid('categoryId')">Selecciona una categoría</small>
+          <small class="error" *ngIf="isInvalid('categoryId')">La categoría es obligatoria</small>
         </div>
 
+        <!-- ✅ MULTI-IMÁGENES -->
         <div class="field">
-          <label>Imagen (URL)</label>
-          <input type="text" formControlName="images" />
-          <small class="hint">Usa una URL https válida</small>
-          <small class="error" *ngIf="isInvalid('images')">La imagen es obligatoria</small>
+          <label>Imágenes (1 URL por línea)</label>
+          <textarea
+            rows="3"
+            formControlName="imagesText"
+            placeholder="https://img1.jpg
+https://img2.png
+https://img3.webp"
+          ></textarea>
+
+          <small class="hint">La primera URL será la imagen principal.</small>
+
+          <small class="error" *ngIf="isInvalid('imagesText')">
+            Debes agregar al menos una imagen
+          </small>
         </div>
       </div>
 
@@ -53,31 +66,29 @@
         </small>
       </div>
 
+      <!-- Preview -->
       <div class="preview">
         <div class="imgbox">
-          <img [src]="imagePreview" (error)="onImgError()" alt="Preview" />
+          <img [src]="imagePreview" (error)="onImgError()" alt="preview" />
         </div>
 
-        <div class="preview-info">
-          <div class="p-title">
-            {{ productForm.value.title || 'Nombre del producto' }}
+        <div class="meta">
+          <div class="line">
+            <span class="k">Categoría:</span>
+            <span class="v">{{ getCategoryName(productForm.value.categoryId) || '—' }}</span>
           </div>
-
-          <div class="p-price">
-            {{ productForm.value.price ? ('$ ' + productForm.value.price) : '$ 0' }}
+          <div class="line">
+            <span class="k">Precio:</span>
+            <span class="v">$ {{ productForm.value.price | number }}</span>
           </div>
-
-          <div class="p-cat">
-            Categoría: {{ getCategoryName(productForm.value.categoryId) || '—' }}
-          </div>
-
-          <button class="btn" type="submit" [disabled]="loading || productForm.invalid">
-            {{ loading
-              ? 'Guardando...'
-              : (isEditMode ? 'Actualizar producto' : 'Guardar producto') }}
-          </button>
         </div>
       </div>
-    </form>
-  </div>
-</div>
+
+      
+
+        <button class="btn btn-success" type="submit" [disabled]="loading">
+          {{ loading ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Crear') }}
+        </button>
+      
+  
+

@@ -11,27 +11,25 @@ import { ProductCardComponent } from '../../products/product-card/product-card.c
   standalone: true,
   imports: [CommonModule, RouterModule, ProductCardComponent],
   templateUrl: './home.html',
-  styleUrls: ['./home.scss']
+  styleUrls: ['./home.scss'],
 })
 export class HomeComponent implements OnInit {
+
+  loading = true;
+
   products: Product[] = [];
   flashProducts: Product[] = [];
-  recommendedProducts: Product[] = [];
-  loading = false;
 
   categories = [
-    { name: 'T-Shirt', icon: '👕', slug: 't-shirt' },
-    { name: 'Jacket', icon: '🧥', slug: 'jacket' },
-    { name: 'Jeans', icon: '👖', slug: 'jeans' },
+    { name: 'T-Shirt', icon: '👕', slug: 'clothes' },
+    { name: 'Jacket', icon: '🧥', slug: 'clothes' },
+    { name: 'Jeans', icon: '👖', slug: 'clothes' },
     { name: 'Shoes', icon: '👟', slug: 'shoes' },
-    { name: 'Watches', icon: '⌚', slug: 'watches' },
-    { name: 'All', icon: '🛍️', slug: 'all' }
+    { name: 'Watches', icon: '⌚', slug: 'others' },
+    { name: 'All', icon: '🛍️', slug: 'all' },
   ];
 
-  constructor(
-    private productService: ProductService,
-    private router: Router
-  ) {}
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -41,10 +39,30 @@ export class HomeComponent implements OnInit {
     this.loading = true;
 
     this.productService.getProducts().subscribe({
-      next: (data: Product[]) => {
-        this.products = data ?? [];
-        this.flashProducts = this.products.slice(0, 4);
-        this.recommendedProducts = this.products.slice(0, 8);
+      next: (data: any[]) => {
+
+        // 🔑 NORMALIZAMOS IMÁGENES (MUY IMPORTANTE)
+        this.products = data.map(p => {
+          let imgs = p.images;
+
+          // Si viene como string tipo '["url"]'
+          if (typeof imgs === 'string') {
+            try {
+              imgs = JSON.parse(imgs);
+            } catch {
+              imgs = [];
+            }
+          }
+
+          return {
+            ...p,
+            images: Array.isArray(imgs) ? imgs : []
+          };
+        });
+
+        // ⚡ Ofertas relámpago = primeros 6 productos reales
+        this.flashProducts = this.products.slice(0, 6);
+
         this.loading = false;
       },
       error: () => {
@@ -53,17 +71,12 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  goToProducts(): void {
-    this.router.navigate(['/products']);
-  }
-
   goToCategory(slug: string): void {
     if (slug === 'all') {
-      this.router.navigate(['/products']);
-    } else {
-      this.router.navigate(['/products'], {
-        queryParams: { category: slug }
-      });
+      // redirigir a todos los productos
+      window.location.href = '/products';
+      return;
     }
-  }
-}
+
+    window.location.href = `/products?category=${slug}`;
+  }}

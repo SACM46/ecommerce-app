@@ -27,6 +27,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   categories: Category[] = [];
 
+  // preview de la imagen principal (primera URL)
   imagePreview = 'https://picsum.photos/640/480';
 
   private subs = new Subscription();
@@ -44,15 +45,18 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       title: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(1)]],
       categoryId: ['', Validators.required],
-      images: ['', Validators.required], // 👈 string para el input
+
+      // ✅ ahora es texto (1 URL por línea)
+      imagesText: ['', Validators.required],
+
       description: ['', Validators.required]
     });
 
-    // Preview cuando cambia la URL
+    // ✅ Preview: toma la PRIMERA línea como imagen principal
     this.subs.add(
-      this.productForm.get('images')!.valueChanges.subscribe((val: string) => {
-        const url = (val || '').trim();
-        this.imagePreview = url || 'https://picsum.photos/640/480';
+      this.productForm.get('imagesText')!.valueChanges.subscribe((val: string) => {
+        const first = this.getFirstImageFromText(val);
+        this.imagePreview = first || 'https://picsum.photos/640/480';
       })
     );
 
@@ -88,20 +92,22 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.productService.getProductById(id).subscribe({
         next: (product: Product) => {
-          const firstImg =
-            Array.isArray(product.images) && product.images.length > 0
-              ? product.images[0]
-              : '';
+          const imagesText = Array.isArray((product as any).images)
+            ? (product as any).images.join('\n')
+            : '';
 
           this.productForm.patchValue({
-            title: product.title ?? '',
-            price: product.price ?? 0,
-            categoryId: (product as any).categoryId ?? '',
-            images: firstImg, // 👈 STRING
-            description: product.description ?? ''
+            title: (product as any).title ?? '',
+            price: (product as any).price ?? 0,
+            // ✅ soporta category como objeto o categoryId
+            categoryId: (product as any).category?.id ?? (product as any).categoryId ?? '',
+            imagesText,
+            description: (product as any).description ?? ''
           });
 
+          const firstImg = this.getFirstImageFromText(imagesText);
           this.imagePreview = (firstImg || 'https://picsum.photos/640/480').trim();
+
           this.loading = false;
         },
         error: () => {
@@ -127,6 +133,21 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.imagePreview = 'https://picsum.photos/640/480';
   }
 
+  private parseImages(text: string): string[] {
+    const list = (text || '')
+      .split('\n')
+      .map(x => x.trim())
+      .filter(x => x.length > 0);
+
+    // fallback si el usuario deja vacío
+    return list.length ? list : ['https://via.placeholder.com/300x200?text=Sin+Imagen'];
+  }
+
+  private getFirstImageFromText(text: string): string {
+    const arr = this.parseImages(text);
+    return arr[0] || '';
+  }
+
   onSubmit(): void {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
@@ -135,17 +156,18 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    const imgText = (this.productForm.value.images || '').trim();
+    const images = this.parseImages(this.productForm.value.imagesText);
 
     const dto: CreateProductDto = {
       title: this.productForm.value.title,
       price: Number(this.productForm.value.price),
       description: this.productForm.value.description,
-      images: imgText ? [imgText] : [], // 👈 vuelve a array
+      images, // ✅ ahora es array de URLs
       categoryId: Number(this.productForm.value.categoryId)
     };
 
-    if (this.isEditMode && this.productId !== null) {
+    // EDITAR
+    if (this.isEditMode && this.productId) {
       this.subs.add(
         this.productService.updateProduct(this.productId, dto).subscribe({
           next: () => {
@@ -162,6 +184,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // CREAR
     this.subs.add(
       this.productService.createProduct(dto).subscribe({
         next: () => {
