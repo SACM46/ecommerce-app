@@ -1,21 +1,22 @@
 <div class="home-container">
-  <!-- Hero -->
+
+  <!-- HERO -->
   <section class="hero-section">
     <div class="hero-content">
       <div class="hero-text">
-        <h2>Limited Time Offer</h2>
-        <p>Up to 50% OFF</p>
-        <button routerLink="/products">Shop Now</button>
+        <h2>¡Oferta por tiempo limitado!</h2>
+        <p>¡Hasta 50% de descuento!</p>
+        <button routerLink="/products">Comprar ahora</button>
       </div>
     </div>
   </section>
 
-  <!-- Loading -->
+  <!-- LOADING -->
   <div *ngIf="loading" class="loading-container">
     <p>Cargando productos...</p>
   </div>
 
-  <!-- Categories -->
+  <!-- CATEGORÍAS -->
   <section class="categories-section" *ngIf="!loading">
     <div class="categories-scroll">
       <div
@@ -29,38 +30,105 @@
     </div>
   </section>
 
-  <!-- Flash Sale -->
+  <!-- OFERTAS RELÁMPAGO -->
   <section class="flash-sale-section" *ngIf="!loading">
     <div class="section-header">
-    <h2>Flash Sale</h2>
-  </div>
+      <h2>⚡ Ofertas relámpago</h2>
+    </div>
+
     <div class="products-scroll">
       <app-product-card
-  *ngFor="let product of flashProducts"
-  [product]="product"
-  [showActions]="false">
-</app-product-card>
-
+        *ngFor="let product of flashProducts"
+        [product]="product"
+        [showActions]="false">
+      </app-product-card>
     </div>
   </section>
 
-  <!-- Recommended -->
+  <!-- RECOMENDADO PARA TI -->
   <section class="todays-section" *ngIf="!loading">
     <div class="section-header">
-    <h2>Recommended For You</h2>
-  </div>
+      <h2>Recomendado para ti</h2>
+    </div>
 
     <div class="products-grid">
       <app-product-card
-  *ngFor="let product of flashProducts"
-  [product]="product"
-  [showActions]="false">
-</app-product-card>
-
+        *ngFor="let product of flashProducts"
+        [product]="product"
+        [showActions]="false">
+      </app-product-card>
     </div>
-<div class="section-header">
-    <button routerLink="/products">Ver todos</button>
-  </div>
+
+    <div class="section-footer">
+      <button routerLink="/products">Ver todos los productos</button>
+    </div>
   </section>
+
+  <!-- FRASE / CTA -->
+  <section class="cta-banner">
+    <div class="cta-overlay">
+      <h2>“Compra sin límites, explora sin fronteras”</h2>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-container">
+
+      <!-- Marca -->
+      <div class="footer-brand">
+        <div class="brand-row">
+          <div class="brand-logo">B</div>
+          <div class="brand-name">TuTienda<span>.com</span></div>
+        </div>
+
+        <p class="slogan">Compra sin límites</p>
+
+        <div class="social">
+          <a href="#">f</a>
+          <a href="#">x</a>
+          <a href="#">▶</a>
+          <a href="#">◎</a>
+        </div>
+      </div>
+
+      <!-- Enlaces -->
+      <div class="footer-cols">
+        <div class="col">
+          <h4>TuTienda</h4>
+          <a href="#">Sobre nosotros</a>
+          <a href="#">Carreras</a>
+          <a href="#">Blog</a>
+          <a href="#">B2B</a>
+        </div>
+
+        <div class="col">
+          <h4>Comprar</h4>
+          <a href="#">Pagos y recargas</a>
+          <a href="#">Pago contra entrega</a>
+          <a href="#">Promociones</a>
+          <a href="#">Tiendas oficiales</a>
+        </div>
+
+        <div class="col">
+          <h4>Vender</h4>
+          <a href="#">Centro para vendedores</a>
+          <a href="#">Índice de marcas</a>
+          <a href="#">Registrar tienda</a>
+        </div>
+
+        <div class="col">
+          <h4>Guía y ayuda</h4>
+          <a href="#">Centro de ayuda</a>
+          <a href="#">Términos y condiciones</a>
+          <a href="#">Privacidad</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 TuTienda.com – Todos los derechos reservados
+    </div>
+  </footer>
 
 </div>
