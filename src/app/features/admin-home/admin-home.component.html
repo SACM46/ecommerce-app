@@ -1,0 +1,122 @@
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <h2>Admin Panel</h2>
+      <p>Inventario</p>
+    </div>
+
+    <nav class="menu">
+      <button class="menu-item active">
+        📦 <span>Inventario</span>
+      </button>
+
+      <a class="menu-item link" routerLink="/products">
+        🛍️ <span>Volver a la tienda</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="search">
+        <span class="icon">🔎</span>
+        <input [(ngModel)]="search" placeholder="Buscar por nombre, descripción o categoría..." />
+      </div>
+
+      <button class="btn primary" (click)="addProduct()">
+        + Añadir Producto
+      </button>
+    </div>
+
+    <!-- HEADER -->
+    <div class="page-head">
+      <div>
+        <h1>Gestión de Inventario</h1>
+        <p class="muted">
+          Gestiona el inventario completo de productos desde el panel de administración
+        </p>
+        <p class="muted small">
+          {{ filteredProducts.length }} producto(s) encontrado(s)
+        </p>
+      </div>
+
+      <button class="btn" (click)="clearSearch()">
+        Limpiar filtros
+      </button>
+    </div>
+
+    <!-- FILTERS -->
+    <section class="filters card" *ngIf="!loading && products.length > 0">
+      <div class="chip"
+           *ngFor="let c of categories"
+           [class.active]="categoryFilter === c"
+           (click)="categoryFilter = c">
+        {{ c }}
+      </div>
+    </section>
+
+    <!-- LOADING -->
+    <section class="card" *ngIf="loading">
+      Cargando productos...
+    </section>
+
+    <!-- EMPTY -->
+    <section class="card empty-state" *ngIf="!loading && filteredProducts.length === 0">
+      <div class="empty-state-icon">📦</div>
+      <h3>No se encontraron productos</h3>
+      <p *ngIf="search">Prueba con otra búsqueda o cambia la categoría.</p>
+      <p *ngIf="!search">Comienza creando tu primer producto.</p>
+
+      <button class="btn primary" (click)="addProduct()">
+        ➕ Crear Producto
+      </button>
+    </section>
+
+    <!-- TABLE -->
+    <section class="card table-card" *ngIf="!loading && filteredProducts.length > 0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th class="right">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let p of filteredProducts">
+            <td class="prod">
+              <img
+                [src]="p.images[0]"
+                (error)="onImageError($event)"
+                alt="img"
+              />
+              <div>
+                <div class="name">{{ p.title }}</div>
+                <div class="sub">ID: {{ p.id }}</div>
+              </div>
+            </td>
+
+            <td>{{ p.category.name }}</td>
+
+            <td class="price">
+              ${{ p.price }}
+            </td>
+
+            <td class="right actions">
+              <button class="icon-btn" title="Editar" (click)="editProduct(p)">✏️</button>
+              <button class="icon-btn danger" title="Eliminar" (click)="deleteProduct(p)">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>

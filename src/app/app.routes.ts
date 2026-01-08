@@ -39,6 +39,13 @@ export const routes: Routes = [
   },
   { path: 'products/:id', component: ProductDetailComponent },
   {
+  path: 'admin-home',
+  loadComponent: () =>
+    import('./features/admin-home/admin-home.component')
+      .then(m => m.AdminHomeComponent),
+       canActivate: [authGuard]
+},
+  {
     path: '**',
     redirectTo: 'products'
   }
