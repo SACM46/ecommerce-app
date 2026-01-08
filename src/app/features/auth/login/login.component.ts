@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
+import { LoginRequest } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -22,12 +23,12 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
 
-  // 1) ngOnInit: aquí llamas lo que se necesita al iniciar el componente
+  // Se ejecuta al iniciar el componente
   ngOnInit(): void {
     this.initForm();
   }
 
-  // 2) Función para inicializar el formulario
+  // Inicializa el formulario
   private initForm(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -35,7 +36,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // 3) Getters para usar en el HTML (validaciones)
+  // Getters para validaciones en el HTML
   get email() {
     return this.loginForm.get('email');
   }
@@ -44,7 +45,7 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password');
   }
 
-  // 4) Función que se ejecuta al enviar el formulario
+  // Envío del formulario
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.markAllAsTouched();
@@ -52,37 +53,40 @@ export class LoginComponent implements OnInit {
     }
 
     this.setLoading(true);
-    const credentials = this.getCredentials();
 
+    const credentials = this.getCredentials();
     this.login(credentials);
   }
 
-  // 5) Función para obtener credenciales del form (más ordenado)
-  private getCredentials() {
-    return this.loginForm.value; // { email, password }
+  // Construye la constante de credenciales (usuario y contraseña)
+  private getCredentials(): LoginRequest {
+    return {
+      email: this.loginForm.get('email')?.value,
+      password: this.loginForm.get('password')?.value,
+    };
   }
 
-  // 6) Función para hacer el login con el service
-  private login(credentials: any): void {
+  // Llama al servicio de autenticación
+  private login(credentials: LoginRequest): void {
     this.authService.login(credentials).subscribe({
       next: () => this.handleLoginSuccess(),
       error: () => this.handleLoginError()
     });
   }
 
-  // 7) Éxito
+  // Login exitoso
   private handleLoginSuccess(): void {
     this.setLoading(false);
     this.router.navigate(['/home']);
   }
 
-  // 8) Error
+  // Error de login
   private handleLoginError(): void {
     this.setLoading(false);
     alert('Credenciales incorrectas');
   }
 
-  // 9) Utilidades
+  // Utilidades
   private setLoading(value: boolean): void {
     this.loading = value;
   }
@@ -91,3 +95,4 @@ export class LoginComponent implements OnInit {
     this.loginForm.markAllAsTouched();
   }
 }
+
