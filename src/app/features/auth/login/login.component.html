@@ -1,97 +1,64 @@
-﻿<!-- Contenedor principal del login -->
+﻿<!-- Contenedor principal -->
 <div class="login-container">
 
-  <!-- Tarjeta visual que contiene todo el formulario -->
+  <!-- Tarjeta del login -->
   <div class="card">
 
-    <!-- Encabezado del login -->
+    <!-- Encabezado -->
     <div class="login-header">
-      <!-- Título de la aplicación -->
       <h1>🛍️ E-commerce</h1>
-      <!-- Mensaje de bienvenida -->
       <p>Bienvenido de nuevo</p>
     </div>
 
-    <!-- Caja informativa con credenciales de prueba -->
+    <!-- Credenciales de prueba -->
     <div class="info-box">
       <strong>Credenciales de prueba:</strong><br>
-      <!-- Email de prueba -->
       Email: john@mail.com<br>
-      <!-- Contraseña de prueba -->
       Password: changeme
     </div>
 
-    <!-- Formulario reactivo de Angular -->
-    <!-- Se vincula al FormGroup 'loginForm' -->
-    <!-- Al enviar ejecuta el método onSubmit() -->
+    <!-- Formulario reactivo -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-      <!-- Grupo del campo Email -->
+      <!-- Email -->
       <div class="form-group">
         <label>Email</label>
-
-        <!-- Input de tipo email -->
-        <!-- Se conecta al formControlName 'email' -->
-        <!-- Aplica clase 'error' si es inválido y fue tocado -->
-        <input 
-          type="email" 
+        <input
+          type="email"
           formControlName="email"
           placeholder="john@mail.com"
           [class.error]="email?.invalid && email?.touched"
         >
 
-        <!-- Mensajes de error del email -->
         <span class="error-message" *ngIf="email?.invalid && email?.touched">
-
-          <!-- Error cuando el campo está vacío -->
-          <span *ngIf="email?.errors?.['required']">
-            El email es requerido
-          </span>
-
-          <!-- Error cuando el formato del email es inválido -->
-          <span *ngIf="email?.errors?.['email']">
-            Email inválido
-          </span>
+          <span *ngIf="email?.errors?.['required']">El email es requerido</span>
+          <span *ngIf="email?.errors?.['email']">Email inválido</span>
         </span>
       </div>
 
-      <!-- Grupo del campo Password -->
+      <!-- Password -->
       <div class="form-group">
         <label>Password</label>
-
-        <!-- Input de tipo contraseña -->
-        <!-- Se conecta al formControlName 'password' -->
-        <!-- Aplica clase 'error' si es inválido y fue tocado -->
-        <input 
-          type="password" 
+        <input
+          type="password"
           formControlName="password"
           placeholder="••••••••"
           [class.error]="password?.invalid && password?.touched"
         >
 
-        <!-- Mensajes de error de la contraseña -->
         <span class="error-message" *ngIf="password?.invalid && password?.touched">
-
-          <!-- Error cuando la contraseña está vacía -->
-          <span *ngIf="password?.errors?.['required']">
-            El password es requerido
-          </span>
-
-          <!-- Error cuando no cumple el mínimo de caracteres -->
-          <span *ngIf="password?.errors?.['minlength']">
-            Mínimo 6 caracteres
-          </span>
+          <span *ngIf="password?.errors?.['required']">El password es requerido</span>
+          <span *ngIf="password?.errors?.['minlength']">Mínimo 6 caracteres</span>
         </span>
       </div>
 
-      <!-- Botón para enviar el formulario -->
-      <!-- Se desactiva cuando loading es true -->
-      <button type="submit" class="btn btn-primary" [disabled]="loading">
-
-        <!-- Texto normal cuando no está cargando -->
+      <!-- Botón -->
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="loading || loginForm.invalid"
+      >
         <span *ngIf="!loading">🔐 Iniciar Sesión</span>
-
-        <!-- Texto cuando se está procesando el login -->
         <span *ngIf="loading">Iniciando sesión...</span>
       </button>
 

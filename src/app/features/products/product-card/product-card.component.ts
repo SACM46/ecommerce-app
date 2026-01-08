@@ -25,11 +25,11 @@ export class ProductCardComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    // ✅ usa tu método real
+    
     this.isAdmin = this.authService.isAuthenticated();
   }
 
-  // ✅ Getters para NO usar "as any" en el HTML
+  
   get categoryName(): string {
     const cat: any = (this.product as any)?.category;
     return cat?.name || 'Sin categoría';
@@ -40,7 +40,7 @@ export class ProductCardComponent implements OnInit {
     return typeof stock === 'number' ? stock : 0;
   }
 
-  // ✅ Imagen principal (primera del array)
+  
   getImageUrl(): string {
     const imgs: any = (this.product as any)?.images;
     if (Array.isArray(imgs) && imgs.length > 0) return imgs[0];
